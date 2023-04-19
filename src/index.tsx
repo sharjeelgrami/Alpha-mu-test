@@ -3,6 +3,9 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Buffer } from "buffer";
+import { ItemsStore, ItemsStoreContext } from "components/2FactorAuth/store";
+
+const itemsStore = new ItemsStore();
 
 // polyfill Buffer for wagmi client
 if (!window.Buffer) {
@@ -15,7 +18,9 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <App />
+    <ItemsStoreContext.Provider value={itemsStore}>
+      <App />
+    </ItemsStoreContext.Provider>
   </React.StrictMode>
 );
 
