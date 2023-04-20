@@ -1,12 +1,7 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ItemsStoreContext } from "components/2FactorAuth/store";
-
-export interface Item {
-  name: string;
-  code: string;
-  id: string;
-}
+import { Item } from "components/2FactorAuth/2FactorAuthProps";
 
 const generateUniqueId = (): string => {
   let timestamp = new Date().getTime().toString(36);

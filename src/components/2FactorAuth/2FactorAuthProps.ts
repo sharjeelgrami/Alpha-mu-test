@@ -8,6 +8,7 @@ export interface Item {
   name: string;
   code: string;
   id: string;
+  timestamp: number;
 }
 
 export interface ItemsStoreProps {

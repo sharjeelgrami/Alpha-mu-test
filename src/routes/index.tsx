@@ -1,12 +1,9 @@
-// import { lazy } from "react";
 import {
   createBrowserRouter,
   Link,
   Outlet,
   useRouteError,
 } from "react-router-dom";
-
-// TODO: check how to use lazy with router 6.4
 import Home from "features/misc/pages/Home";
 import About from "features/misc/pages/About";
 import DarkModeToggle from "components/examples/dark-mode";
@@ -25,10 +22,7 @@ function Root() {
         </ul>
         <DarkModeToggle />
       </nav>
-
-      <div id="detail">
-        <Outlet />
-      </div>
+      <Outlet />
     </div>
   );
 }
@@ -48,7 +42,6 @@ function ErrorPage() {
   );
 }
 
-// tutorial: https://reactrouter.com/en/main/start/tutorial
 const router = createBrowserRouter([
   {
     path: "/",

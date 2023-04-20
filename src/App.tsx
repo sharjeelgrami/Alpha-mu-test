@@ -1,17 +1,13 @@
 import { RouterProvider } from "react-router-dom";
 import { ItemsStoreContext } from "components/2FactorAuth/store"; // import the store
 import router from "routes";
+import { useContext } from "react";
 
 function App() {
+  const itemsStore = useContext(ItemsStoreContext); // use the useContext hook to access the store
+
   return (
-    <ItemsStoreContext.Consumer>
-      {(itemsStore) => (
-        <RouterProvider
-          router={router}
-          fallbackElement={<div>loading...</div>}
-        />
-      )}
-    </ItemsStoreContext.Consumer>
+    <RouterProvider router={router} fallbackElement={<div>loading...</div>} />
   );
 }
 

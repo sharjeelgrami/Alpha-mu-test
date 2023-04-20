@@ -13,7 +13,7 @@ export class ItemsStore {
   }
 
   addItem(item: Item) {
-    this.items.push(item);
+    this.items.push({ ...item, timestamp: Date.now() });
   }
 
   resetCode(item: Item) {
