@@ -9,37 +9,43 @@ const generateUniqueId = (): string => {
   return timestamp + randomString;
 };
 
+export const generateCode = (): string => {
+  return (Math.floor(Math.random() * 900000) + 100000).toString();
+};
+
 const NewItemPage = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState("");
+  const [itemName, setItemName] = useState("");
   const itemsStore = useContext(ItemsStoreContext);
 
   // Handle form submission
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (name.trim() !== "") {
-      const code = Math.floor(100000 + Math.random() * 900000).toString(); // Generate a 6-digit code
-      const newItem: Item = { name, code, id: generateUniqueId() };
+  const handleAddItemClick = () => {
+    if (itemName) {
+      const newItem: Item = {
+        id: generateUniqueId(),
+        name: itemName,
+        code: generateCode(),
+      };
       itemsStore.addItem(newItem);
-      setName("");
+      itemsStore.resetCodeAndTimer(newItem);
+      setItemName("");
       navigate("/");
     }
   };
 
   return (
-    <div className="add-new-item">
-      <h1>Add New Item</h1>
-      <form onSubmit={handleSubmit}>
+    <>
+      <div className="add-new-item">
         <input
           type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
+          placeholder="Enter name"
+          value={itemName}
+          onChange={(e) => setItemName(e.target.value)}
         />
-        <button type="submit">Add Item</button>
-      </form>
+        <button onClick={handleAddItemClick}>Add Item</button>
+      </div>
       <button onClick={() => navigate("/")}>Go Back</button>
-    </div>
+    </>
   );
 };
 
