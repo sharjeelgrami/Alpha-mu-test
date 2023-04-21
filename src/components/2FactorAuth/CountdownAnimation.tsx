@@ -16,13 +16,17 @@ export const CountdownAnimation = observer(
 
     useEffect(() => {
       const timer = setInterval(() => {
-        if (timeLeft > 0) {
-          setTimeLeft((prevTime) => prevTime - 1);
-        }
+        setTimeLeft((prevTime) => {
+          if (prevTime === 0) {
+            // Reset the countdown if timeLeft reaches 0
+            return initialTime;
+          }
+          return prevTime - 1;
+        });
       }, 1000);
 
       return () => clearInterval(timer);
-    }, [timeLeft]);
+    }, []);
 
     const progress = Math.round(((initialTime - timeLeft) / initialTime) * 100); // Calculate the progress of the animation based on the remaining time
 

@@ -38,15 +38,17 @@ export class ItemsStore {
 
   addItem(item: Item) {
     this.items.push({ ...item, timestamp: Date.now(), itemRemainingTime: 60 }); // Add the `itemRemainingTime` property and set it to 60 seconds
-    setInterval(() => {
-      const index = this.items.findIndex((i) => i.id === item.id);
-      if (index >= 0) {
+    const index = this.items.findIndex((i) => i.id === item.id);
+    if (index >= 0) {
+      this.items[index].intervalId = setInterval(() => {
         const remainingTime = this.items[index].itemRemainingTime;
         if (remainingTime && remainingTime > 0) {
           this.items[index].itemRemainingTime = remainingTime - 1;
+        } else {
+          this.resetCodeAndTimer(item);
         }
-      }
-    }, 1000);
+      }, 1000);
+    }
   }
 
   setItemTimes(newTimes: { [key: string]: number }) {
@@ -78,6 +80,16 @@ export class ItemsStore {
     this.items.forEach((i) => {
       if (i.id === item.id) {
         newItemTimes.set(item.id, 60);
+        // Clear the existing interval and set up a new one for the regenerated code
+        if (i.intervalId) {
+          clearInterval(i.intervalId);
+        }
+        i.intervalId = setInterval(() => {
+          const remainingTime = i.itemRemainingTime;
+          if (remainingTime && remainingTime > 0) {
+            i.itemRemainingTime = remainingTime - 1;
+          }
+        }, 1000);
       } else {
         newItemTimes.set(i.id, this.itemTimes.get(i.id) || 0);
       }
