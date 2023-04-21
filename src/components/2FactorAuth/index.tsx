@@ -13,7 +13,7 @@ const TwoFactorAuth = observer(() => {
   const circleRefs = useRef<SVGCircleElement[]>([]);
   const [seconds, setSeconds] = useState(60);
 
-  const [itemTimes, setItemTimes] = useState<ItemTimes>({});
+  const [itemTimes, setItemTimes] = useState<Record<string, number>>({});
 
   const radius = 20;
   const circumference = 2 * Math.PI * radius;
@@ -34,17 +34,17 @@ const TwoFactorAuth = observer(() => {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      itemsStore.setItemTimes((prevItemTimes) => {
-        const newItemTimes = observable.map(prevItemTimes);
-        itemsStore.items.forEach((item) => {
-          const remainingTime = newItemTimes.get(item.id) || 60;
+      setItemTimes((prevItemTimes) => {
+        const newItemTimes: Record<string, number> = {};
+        for (const item of itemsStore.items) {
+          const remainingTime = prevItemTimes[item.id] ?? 60;
           if (remainingTime > 0) {
-            newItemTimes.set(item.id, remainingTime - 1);
+            newItemTimes[item.id] = remainingTime - 1;
             if (remainingTime === 1) {
               itemsStore.resetCodeAndTimer(item);
             }
           }
-        });
+        }
         return newItemTimes;
       });
     }, 1000);

@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { makeObservable, observable, action, ObservableMap } from "mobx";
+import { makeObservable, observable, action, ObservableMap, toJS } from "mobx";
 import { generateCode } from "components/addNewItem";
 import { Item } from "./2FactorAuthProps";
 
@@ -49,9 +49,13 @@ export class ItemsStore {
     }, 1000);
   }
 
-  setItemTimes(newItemTimes: { [key: string]: number }) {
-    const plainObj = Object.assign({}, newItemTimes);
-    this.itemTimes.replace(plainObj);
+  setItemTimes(newTimes: { [key: string]: number }) {
+    const plainObject = toJS(this.itemTimes);
+    const newObject = observable.map<string, number>(plainObject);
+    Object.keys(newTimes).forEach((key) => {
+      newObject.set(key, newTimes[key]);
+    });
+    this.itemTimes.replace(newObject);
   }
 
   resetCode(item: Item) {
@@ -64,13 +68,16 @@ export class ItemsStore {
   }
 
   resetCodeAndTimer = (item: Item) => {
+    console.log("resetCodeAndTimer called for item:", item);
     // reset the code
     item.code = generateCode();
+    console.log("New code generated for item:", item);
 
     // reset the timer
     const newItemTimes = new ObservableMap<string, number>();
     newItemTimes.set(item.id, 60);
     this.itemTimes.replace(newItemTimes);
+    console.log("Item time reset for item:", item);
   };
 
   updateItems(newItems: Item[]) {
