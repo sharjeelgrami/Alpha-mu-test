@@ -13,6 +13,8 @@ export interface Item {
   name: string;
   code: string;
   timestamp?: number;
+  itemRemainingTime?: number;
+  intervalId?: ReturnType<typeof setInterval> | null;
 }
 
 export interface ItemsStoreProps {

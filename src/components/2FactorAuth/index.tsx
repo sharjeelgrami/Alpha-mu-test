@@ -5,6 +5,7 @@ import { ItemsStoreContext } from "./store";
 import { Link } from "react-router-dom";
 import { Item, ItemTimes } from "./2FactorAuthProps";
 import { observable } from "mobx";
+import { CountdownAnimation } from "./CountdownAnimation";
 
 const TwoFactorAuth = observer(() => {
   const itemsStore = useContext(ItemsStoreContext);
@@ -29,14 +30,6 @@ const TwoFactorAuth = observer(() => {
     const newItemTimes: ItemTimes = { ...itemTimes };
     newItemTimes[item.id] = 60;
     setItemTimes(newItemTimes);
-  };
-
-  const calculateTimerProgress = (timer: number) => {
-    const totalTime = 60;
-    const remainingTime = Math.max(0, timer);
-    const timePercentage = (remainingTime / totalTime) * 100;
-    const dashoffset = ((100 - timePercentage) / 100) * (Math.PI * 2 * 22);
-    return dashoffset;
   };
 
   useEffect(() => {
@@ -73,7 +66,7 @@ const TwoFactorAuth = observer(() => {
   // Update the strokeDashoffset attribute of the circle every second
   useEffect(() => {
     const intervalId = setInterval(() => {
-      circleRefs.current.forEach((circleRef, index) => {
+      circleRefs.current.forEach((circleRef) => {
         if (circleRef) {
           circleRef.setAttribute(
             "stroke-dashoffset",
@@ -88,40 +81,12 @@ const TwoFactorAuth = observer(() => {
   return (
     <div className="two-factor-auth">
       <h1>2FA Code</h1>
-      {itemsStore.items.map((item, index) => (
+      {itemsStore.items.map((item) => (
         <div className="code-container" key={item.id}>
           <h4>{item.name}</h4>
           <p className="code">{item.code}</p>
           <FaLock onClick={() => itemsStore.resetCodeAndTimer(item)} />
-          <svg className="circle" width="48" height="48" viewBox="0 0 48 48">
-            <circle
-              ref={(el) => {
-                if (el) circleRefs.current[index] = el;
-              }}
-              cx="24"
-              cy="24"
-              r="22"
-              fill="none"
-              strokeWidth="4"
-              stroke="#e6e6e6"
-            />
-            <circle
-              className="circle-progress"
-              cx="24"
-              cy="24"
-              r="22"
-              fill="none"
-              strokeWidth="4"
-              stroke="#ff6b6b"
-              strokeLinecap="round"
-              strokeDasharray="138.23"
-              strokeDashoffset={
-                itemTimes && itemTimes[item.id]
-                  ? calculateTimerProgress(itemTimes[item.id])
-                  : 0
-              }
-            />
-          </svg>
+          <CountdownAnimation remainingTime={item.itemRemainingTime || 0} />
         </div>
       ))}
       <Link to="/about">

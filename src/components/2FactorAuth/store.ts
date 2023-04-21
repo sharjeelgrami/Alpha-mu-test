@@ -37,8 +37,16 @@ export class ItemsStore {
   }
 
   addItem(item: Item) {
-    this.items.push({ ...item, timestamp: Date.now() });
-    this.itemTimes.set(item.id, 60); // Set the initial remaining time to 60 seconds
+    this.items.push({ ...item, timestamp: Date.now(), itemRemainingTime: 60 }); // Add the `itemRemainingTime` property and set it to 60 seconds
+    setInterval(() => {
+      const index = this.items.findIndex((i) => i.id === item.id);
+      if (index >= 0) {
+        const remainingTime = this.items[index].itemRemainingTime;
+        if (remainingTime && remainingTime > 0) {
+          this.items[index].itemRemainingTime = remainingTime - 1;
+        }
+      }
+    }, 1000);
   }
 
   setItemTimes(newItemTimes: { [key: string]: number }) {
@@ -55,14 +63,15 @@ export class ItemsStore {
     }
   }
 
-  resetCodeAndTimer(item: Item) {
+  resetCodeAndTimer = (item: Item) => {
     // reset the code
     item.code = generateCode();
+
     // reset the timer
     const newItemTimes = new ObservableMap<string, number>();
     newItemTimes.set(item.id, 60);
     this.itemTimes.replace(newItemTimes);
-  }
+  };
 
   updateItems(newItems: Item[]) {
     this.items = newItems;
