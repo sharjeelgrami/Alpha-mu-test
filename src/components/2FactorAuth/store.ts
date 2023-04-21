@@ -73,10 +73,22 @@ export class ItemsStore {
     item.code = generateCode();
     console.log("New code generated for item:", item);
 
-    // reset the timer
+    // reset the timer for all items
     const newItemTimes = new ObservableMap<string, number>();
-    newItemTimes.set(item.id, 60);
-    this.itemTimes.replace(newItemTimes);
+    this.items.forEach((i) => {
+      if (i.id === item.id) {
+        newItemTimes.set(item.id, 60);
+      } else {
+        newItemTimes.set(i.id, this.itemTimes.get(i.id) || 0);
+      }
+    });
+
+    // convert the ObservableMap to a regular object
+    const newItemTimesObj = Object.fromEntries(newItemTimes.entries());
+
+    // pass the regular object to setItemTimes()
+    this.setItemTimes(newItemTimesObj);
+
     console.log("Item time reset for item:", item);
   };
 

@@ -4,7 +4,6 @@ import { FaLock } from "react-icons/fa";
 import { ItemsStoreContext } from "./store";
 import { Link } from "react-router-dom";
 import { Item, ItemTimes } from "./2FactorAuthProps";
-import { observable } from "mobx";
 import { CountdownAnimation } from "./CountdownAnimation";
 
 const TwoFactorAuth = observer(() => {
@@ -30,6 +29,7 @@ const TwoFactorAuth = observer(() => {
     const newItemTimes: ItemTimes = { ...itemTimes };
     newItemTimes[item.id] = 60;
     setItemTimes(newItemTimes);
+    setSeconds(60);
   };
 
   useEffect(() => {
