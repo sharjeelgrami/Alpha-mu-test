@@ -69,40 +69,21 @@ export class ItemsStore {
     }
   }
 
-  resetCodeAndTimer = (item: Item) => {
-    console.log("resetCodeAndTimer called for item:", item);
-    // reset the code
-    item.code = generateCode();
-    console.log("New code generated for item:", item);
-
-    // reset the timer for all items
-    const newItemTimes = new ObservableMap<string, number>();
-    this.items.forEach((i) => {
+  resetCodeAndTimer(item: Item) {
+    const updatedItems = this.items.map((i) => {
       if (i.id === item.id) {
-        newItemTimes.set(item.id, 60);
-        // Clear the existing interval and set up a new one for the regenerated code
-        if (i.intervalId) {
-          clearInterval(i.intervalId);
-        }
-        i.intervalId = setInterval(() => {
-          const remainingTime = i.itemRemainingTime;
-          if (remainingTime && remainingTime > 0) {
-            i.itemRemainingTime = remainingTime - 1;
-          }
-        }, 1000);
-      } else {
-        newItemTimes.set(i.id, this.itemTimes.get(i.id) || 0);
+        return {
+          ...i,
+          code: generateCode(),
+          remainingTime: 60,
+          itemRemainingTime: 60, // explicitly set itemRemainingTime to 60
+          key: generateCode(), // generate a new key for the CountdownAnimation component
+        };
       }
+      return i;
     });
-
-    // convert the ObservableMap to a regular object
-    const newItemTimesObj = Object.fromEntries(newItemTimes.entries());
-
-    // pass the regular object to setItemTimes()
-    this.setItemTimes(newItemTimesObj);
-
-    console.log("Item time reset for item:", item);
-  };
+    this.items = updatedItems;
+  }
 
   updateItems(newItems: Item[]) {
     this.items = newItems;

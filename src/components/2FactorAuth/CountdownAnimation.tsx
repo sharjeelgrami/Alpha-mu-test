@@ -2,7 +2,7 @@ import { observer } from "mobx-react";
 import { useState, useEffect } from "react";
 
 export const CountdownAnimation = observer(
-  ({ remainingTime }: { remainingTime: number }) => {
+  ({ remainingTime, key }: { remainingTime: number; key: string }) => {
     const initialTime = 60;
     const [timeLeft, setTimeLeft] = useState(initialTime);
 
@@ -26,7 +26,7 @@ export const CountdownAnimation = observer(
       }, 1000);
 
       return () => clearInterval(timer);
-    }, []);
+    }, [key]); // add key as a dependency of the useEffect hook
 
     const progress = Math.round(((initialTime - timeLeft) / initialTime) * 100); // Calculate the progress of the animation based on the remaining time
 

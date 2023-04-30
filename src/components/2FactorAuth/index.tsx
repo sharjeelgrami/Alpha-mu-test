@@ -82,11 +82,18 @@ const TwoFactorAuth = observer(() => {
     <div className="two-factor-auth">
       <h1>2FA Code</h1>
       {itemsStore.items.map((item) => (
-        <div className="code-container" key={item.id}>
-          <h4>{item.name}</h4>
-          <p className="code">{item.code}</p>
-          <FaLock onClick={() => itemsStore.resetCodeAndTimer(item)} />
-          <CountdownAnimation remainingTime={item.itemRemainingTime || 0} />
+        <div className="item" key={item.id}>
+          <div className="item-details">
+            <div className="item-name">{item.name}</div>
+            <div className="item-code">{item.code}</div>
+          </div>
+          <div className="item-actions">
+            <FaLock onClick={() => itemsStore.resetCodeAndTimer(item)} />
+          </div>
+          <CountdownAnimation
+            remainingTime={item.itemRemainingTime ?? 60}
+            key={item.id}
+          />
         </div>
       ))}
       <Link to="/about">

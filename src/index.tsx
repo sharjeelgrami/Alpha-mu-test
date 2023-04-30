@@ -5,12 +5,8 @@ import reportWebVitals from "./reportWebVitals";
 import { Buffer } from "buffer";
 import { ItemsStore, ItemsStoreContext } from "components/2FactorAuth/store";
 
+// create the store instance once
 const itemsStore = new ItemsStore();
-
-// polyfill Buffer for wagmi client
-if (!window.Buffer) {
-  window.Buffer = Buffer;
-}
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
